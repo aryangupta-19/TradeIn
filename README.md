@@ -50,26 +50,7 @@ I implemented:
 Passwords are hashed in the user model using a Mongoose pre-save hook.  
 JWT is generated on login/signup and stored in cookie-based session flow.
 
-### Authorization
-
-I added `requireAuth` middleware in backend and used it to protect sensitive endpoints:
-
-1. `GET /allHoldings`
-2. `GET /allPositions`
-3. `POST /newOrder`
-
 So even if someone directly calls APIs, protected routes are blocked without valid token.
-
-### Frontend Auth Handling
-
-I used React Context (`AuthContext`) to manage session state on frontend:
-
-1. session verify on app load
-2. auth state handling (`isAuthenticated`, `authLoading`, `user`)
-3. login/signup updates state
-4. logout clears state
-
-This keeps navbar and auth behavior consistent.
 
 ### Dashboard Functionality
 
@@ -82,89 +63,12 @@ Dashboard currently includes:
 
 Dashboard API calls are connected with backend protected routes using credentialed requests.
 
-## Schema and Model Connection
-
-I kept schema/model separation to make backend easier to maintain.
-
-### Holdings
-
-- Schema: `backend/schema/HoldingsSchema.js`
-- Model: `backend/models/HoldingsModel.js`
-- Used in route: `GET /allHoldings`
-
-### Positions
-
-- Schema: `backend/schema/PositionsSchema.js`
-- Model: `backend/models/PositionsModel.js`
-- Used in route: `GET /allPositions`
-
-### Orders
-
-- Schema: `backend/schema/OrdersSchema.js`
-- Model: `backend/models/OrdersModel.js`
-- Used in route: `POST /newOrder`
-
-### Users
-
-- Model file: `backend/models/UsersModel.js`
-- Used in: signup/login/verify/auth middleware
-
-This gives a clear flow:
-
-`Route -> Model -> Schema -> MongoDB`
-
 ## Tech Stack
 
 1. Frontend: React, React Router, Axios, Chart.js
 2. Backend: Node.js, Express, JWT, bcrypt, cookie-parser, CORS
 3. Database: MongoDB with Mongoose
 4. Build tools: Vite
-
-## Local Setup
-
-### 1) Clone repository
-
-```bash
-git clone https://github.com/aryangupta-19/TradeIn.git
-cd TradeIn
-```
-
-### 2) Run backend
-
-```bash
-cd backend
-npm install
-```
-
-Create `.env` in `backend/`:
-
-```env
-MONGO_URL=your_mongodb_connection_string
-TOKEN_KEY=your_secret_key
-NODE_ENV=development
-```
-
-Then start server:
-
-```bash
-npm start
-```
-
-### 3) Run frontend
-
-```bash
-cd ../frontend
-npm install
-npm run dev
-```
-
-### 4) Run dashboard
-
-```bash
-cd ../dashboard
-npm install
-npm run dev
-```
 
 ## API Endpoints Implemented
 
