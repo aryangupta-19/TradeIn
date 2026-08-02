@@ -1,0 +1,22 @@
+<svg width="220" height="60" viewBox="0 0 220 60" xmlns="http://www.w3.org/2000/svg">
+  
+  <!-- Icon (abstract upward growth shape) -->
+  <g>
+    <rect x="5" y="25" width="8" height="20" fill="#387ed1" rx="2"/>
+    <rect x="18" y="18" width="8" height="27" fill="#387ed1" rx="2"/>
+    <rect x="31" y="10" width="8" height="35" fill="#387ed1" rx="2"/>
+    
+    <!-- Arrow -->
+    <path d="M45 15 L55 5 L55 12 L65 12 L65 18 L55 18 L55 25 Z" fill="#387ed1"/>
+  </g>
+
+  <!-- Text -->
+  <text x="80" y="38" 
+        font-family="Inter, Arial, sans-serif" 
+        font-size="28" 
+        font-weight="600" 
+        fill="#1a1a1a">
+    Trade<tspan fill="#387ed1">In</tspan>
+  </text>
+
+</svg>

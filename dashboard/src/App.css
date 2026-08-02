@@ -52,11 +52,23 @@ code {
 }
 
 .btn-green {
+  text-decoration: none;
+  padding: 10px 20px;
+  border-radius: 2px;
+  color: #fff;
+  margin-right: 2px;
+  margin-left: 2px;
   background: #4caf50;
 }
 
 .btn-blue {
-  background: #4184f3;
+  text-decoration: none;
+  padding: 10px 20px;
+  border-radius: 2px;
+  color: #fff;
+  margin-right: 2px;
+  margin-left: 2px;
+  background: #f41f1f;
 }
 
 .row {

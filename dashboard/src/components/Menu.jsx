@@ -20,11 +20,11 @@ const Menu = () => {
 
   return (
     <div className="menu-container">
-      <img
-        src="./kite-logo (1).svg"
-        alt="logo-image"
-        style={{ width: "50px" }}
-      />
+    
+      <Link className="navbar-brand" to="/">
+            <img src="./media/logo.svg" alt="logo" style={{width: "80%"}}></img>
+      </Link>
+      
       <div className="menus">
         <ul>
           <li>
@@ -62,13 +62,13 @@ const Menu = () => {
               <p className = {selectedMenu===4? "menu selected": "menu"}>Funds</p>
             </Link>
           </li>
-          <li>
+          {/* <li>
             <Link to="/apps"
             style={{ textDecoration: "none" }}
             onClick={() => handleMenuClick(5)}>
               <p className = {selectedMenu===5? "menu selected": "menu"}>Apps</p>
             </Link>
-          </li>
+          </li> */}
         </ul>
         <hr />
         <div className="profile" onClick={handleProfileClick}>
