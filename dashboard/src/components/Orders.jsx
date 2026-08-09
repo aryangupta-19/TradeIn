@@ -17,7 +17,8 @@ const Orders = () => {
 
   return (
     <div className="orders">
-      {orders.length > 0 ? (
+      {
+        orders.length > 0 ? (
         <div className="order-table">
           <table>
             <thead>
@@ -43,10 +44,10 @@ const Orders = () => {
         </div>
       ) : (
         <div className="no-orders">
-          <p>You haven't placed any orders today</p>
+          <p>You haven't placed any orders yet.</p>
   
           <Link to="/" className="btn">
-            Get started
+            Start trading
           </Link>
         </div>
       )}

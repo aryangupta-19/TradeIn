@@ -6,7 +6,7 @@ const Funds = () => {
     <>
       <div className="funds">
         <p>Instant, zero-cost fund transfers with UPI </p>
-        <Link className=" btn-blue">Add funds</Link>
+        <Link to="/addFunds" className=" btn-blue">Show funds</Link>
         <Link className=" btn-green">Withdraw</Link>
       </div>
 
