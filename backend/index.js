@@ -18,6 +18,8 @@ const url = process.env.MONGO_URL;
 const {HoldingsModel} = require("./models/HoldingsModel.js");
 const {PositionsModel} = require("./models/PositionsModel.js");
 const {OrdersModel} = require("./models/OrdersModel.js");
+const {WalletModel} = require("./models/WalletModel.js");
+
 const User = require("./models/UsersModel");
 const { createSecretToken } = require("./utils/SecretToken");
 const bcrypt = require("bcrypt");
@@ -129,6 +131,71 @@ app.get("/allPositions", requireAuth, async (req, res) => {
     res.json(allPositions);
 });
 
+app.get("/funds", requireAuth, async (req, res) => {
+  const wallet = await WalletModel.findOne({ userId: req.user._id });
+  if (!wallet) {
+    return res.status(404).json({
+      success: false,
+      message: "Wallet not found",
+    });
+  }
+  res.json({
+    success: true,
+    balance: wallet.balance,
+  });
+});
+
+app.post("/funds/deposit", requireAuth, async (req, res) => {
+  try {
+    const amount = Number(req.body.amount);
+
+    if (!Number.isFinite(amount) || amount <= 0) {
+      return res.status(400).json({ success: false, message: "Invalid Amount" });
+    }
+
+    const wallet = await WalletModel.findOne({userId: req.user._id});
+
+    if (!wallet) {
+      return res.status(404).json({success: false, message: "Wallet not found"});
+    }
+
+    wallet.balance = Number(wallet.balance || 0) + amount;
+    await wallet.save();
+    return res.json({success: true, balance: wallet.balance});
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({success: false, message: "Server error"});
+  }
+});
+
+app.post("/funds/withdraw", requireAuth, async(req, res) =>{
+  try{
+    const amount = Number(req.body.amount);
+    if(!Number.isFinite(amount) || amount <= 0){
+      res.status(400).json({success : false, message : "Invalid Amount"});
+    }
+
+    const wallet = await WalletModel.findOne({ userId: req.user._id });
+
+    if (!wallet) {
+      return res.status(404).json({ success: false, message: "Wallet not found" });
+    }
+
+    if (wallet.balance < amount) {
+      return res.status(400).json({ success: false, message: "Insufficient funds" });
+    }
+
+    wallet.balance = Number(wallet.balance || 0) - amount;
+    await wallet.save();
+
+    res.json({ success: true, balance: wallet.balance });
+  }catch(error){
+    console.log(error);
+    return res.status(500).json({success: false, message: "Server error"});
+  }
+});
+
 app.post("/newOrder", requireAuth, async(req, res) => {
     let newOrder = new OrdersModel({
         name: req.body.name,
@@ -157,9 +224,14 @@ app.post("/signup", async(req, res, next) => {
 
         const user = await User.create({ email, password, username, createdAt });
         const token = createSecretToken(user._id);
+        
+        await WalletModel.create({
+          userId: user._id,
+          balance: 0,
+        });
 
         res.cookie("token", token, cookieOptions);
-        res.status(201).json({ message: "User signed in successfully", success: true, user });
+        res.status(201).json({ message: "User signed in successfully", success: true, user, walletBalance: 0 });
         // next();
     }catch (error) {
         console.error(error);
