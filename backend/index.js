@@ -121,9 +121,9 @@ app.get("/allHoldings", requireAuth, async(req, res) => {
     res.json(allHoldings);
 });
 
-app.get("/allOrders", requireAuth, async(req, res) => {
-  let allOrders = await OrdersModel.find({});
-  res.json(allOrders);
+app.get("/allOrders", requireAuth, async (req, res) => {
+  const allOrders = await OrdersModel.find({user: req.user._id});
+  res.status(200).json(allOrders);
 });
 
 app.get("/allPositions", requireAuth, async (req, res) => {
@@ -197,20 +197,74 @@ app.post("/funds/withdraw", requireAuth, async(req, res) =>{
 });
 
 app.post("/newOrder", requireAuth, async(req, res) => {
-    let newOrder = new OrdersModel({
-        name: req.body.name,
-        price: req.body.price,
-        qty: req.body.qty,
-        mode: req.body.mode,
+  try{
+      let newOrder = new OrdersModel({
+          name: req.body.name,
+          price: req.body.price,
+          qty: req.body.qty,
+          mode: req.body.mode,
+          user: req.user._id, 
+      });
+      console.log(newOrder);
+      // HoldingsModel -> insert current order in our holdings 
+      // let holding = await HoldingsModel.insertOne(newOrder);
+      // console.log(holding);
+      await newOrder.save();
+      res.status(200).json({success: true, message: "Order created successfully", order: newOrder,
+      });
+    }catch (error) {
+      console.log(error);
+      res.status(500).json({success: false, message: "Something went wrong",});
+    }
+});
+
+app.post("/sellOrder", requireAuth, async(req, res) =>{
+  try{  
+    console.log(req.body);
+    const { name, qty, price } = req.body;
+
+    const existingOrder = await OrdersModel.findOne({
+      name: name,
+      user: req.user._id,
+      mode: "BUY",       
     });
-    console.log(newOrder);
-    
-    // HoldingsModel -> insert current order in our holdings 
-    // let holding = await HoldingsModel.insertOne(newOrder);
-    // console.log(holding);
-    newOrder.save();
-    res.send("order saved");
-})
+    console.log(existingOrder);
+
+    if(!existingOrder){
+      return res.status(800).json({success: false, message: "You don't own this stock",});
+    }
+
+    if(existingOrder.qty < qty){
+      return res.status(900).json({success: false, message: "Not enough quantity to sell"});
+    }
+
+    const sellOrder = new OrdersModel({
+      name: name,
+      qty: qty,
+      price: price,
+      mode: "SELL",      
+      user: req.user._id,
+    });
+    await sellOrder.save();
+
+    existingOrder.qty -= qty;
+
+    if (existingOrder.qty === 0) {
+      await OrdersModel.findByIdAndDelete(existingOrder._id);
+    } else {
+      await existingOrder.save();
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Stock sold successfully",
+      order: sellOrder,
+    });
+  }catch(error){
+    console.log(error);
+    res.status(500).json({success: false, message: "Something went wrong"});
+  }
+});
 
 app.post("/signup", async(req, res, next) => {
     try{

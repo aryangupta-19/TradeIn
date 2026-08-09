@@ -5,6 +5,11 @@ const OrdersSchema = new mongoose.Schema({
     price: Number,
     qty: Number,
     mode: String,
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
+      },
 });
 
 module.exports = { OrdersSchema };
