@@ -84,11 +84,18 @@ Dashboard API calls are connected with backend protected routes using credential
 
 I am continuing work on this project and currently focusing on:
 
-1. cleaner env-based API configuration
-2. stronger validation and consistent API error format
-3. better frontend route protection
-4. adding tests for auth and protected endpoints
-5. deployment hardening for production setup
+1. Adding more functionalities based on stock exchange with dummy money.
+2. Adding deposit withdraw features.
+3. stronger validation and consistent API error format
+4. better frontend route protection
+5. adding tests for auth and protected endpoints
+6. deployment hardening for production setup.
+
+## Next Target 
+
+1. Configure user wallet with Stock Transactions.
+2. Show Transaction Histor (Transaction Module).
+3. Payment Gateways.
 
 This project is still evolving, and I am treating it as an actively maintained portfolio project rather than a one-time build.
 
