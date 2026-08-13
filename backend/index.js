@@ -198,19 +198,41 @@ app.post("/funds/withdraw", requireAuth, async(req, res) =>{
 
 app.post("/newOrder", requireAuth, async(req, res) => {
   try{
+      // console.log(newOrder);
+      const price = Number(req.body.price);
+      const qty = Number(req.body.qty);
+      const totalCost = price * qty;
+      if (!Number.isFinite(price) || price <= 0 || !Number.isFinite(qty) || qty <= 0) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid price or quantity",
+        });
+      }
+
+      const wallet = await WalletModel.findOne({userId: req.user._id});
+      if(!wallet){
+        console.log("Wallet not esxits");
+        return res.status(404).json({success: false, message: "Wallet not found"});
+      }
+
+      if (wallet.balance < totalCost) {
+        console.log("Low balance");
+        return res.status(400).json({ success: false, message: "Insufficient wallet balance"});
+      }
+
       let newOrder = new OrdersModel({
-          name: req.body.name,
-          price: req.body.price,
-          qty: req.body.qty,
-          mode: req.body.mode,
-          user: req.user._id, 
+        name: req.body.name,
+        price: price,
+        qty: qty,
+        mode: req.body.mode,
+        user: req.user._id, 
       });
-      console.log(newOrder);
-      // HoldingsModel -> insert current order in our holdings 
-      // let holding = await HoldingsModel.insertOne(newOrder);
-      // console.log(holding);
+
+      wallet.balance = wallet.balance - totalCost;
+      await wallet.save();
       await newOrder.save();
-      res.status(200).json({success: true, message: "Order created successfully", order: newOrder,
+
+      res.status(200).json({success: true, message: "Order purchased successfully", order: newOrder, balance: wallet.balance,
       });
     }catch (error) {
       console.log(error);
@@ -220,22 +242,35 @@ app.post("/newOrder", requireAuth, async(req, res) => {
 
 app.post("/sellOrder", requireAuth, async(req, res) =>{
   try{  
-    console.log(req.body);
-    const { name, qty, price } = req.body;
+    const name = req.body.name;
+    const price = Number(req.body.price);
+    const qty = Number(req.body.qty);
+    const totalCredit = price * qty;
+
+    if (!name || !Number.isFinite(price) || price <= 0 || !Number.isFinite(qty) || qty <= 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid price or quantity",
+      });
+    }
+
+    const wallet = await WalletModel.findOne({ userId: req.user._id });
+    if (!wallet) {
+      return res.status(404).json({ success: false, message: "Wallet not found" });
+    }
 
     const existingOrder = await OrdersModel.findOne({
       name: name,
       user: req.user._id,
       mode: "BUY",       
     });
-    console.log(existingOrder);
 
     if(!existingOrder){
-      return res.status(800).json({success: false, message: "You don't own this stock",});
+      return res.status(400).json({success: false, message: "You don't own this stock",});
     }
 
     if(existingOrder.qty < qty){
-      return res.status(900).json({success: false, message: "Not enough quantity to sell"});
+      return res.status(400).json({success: false, message: "Not enough quantity to sell"});
     }
 
     const sellOrder = new OrdersModel({
@@ -255,10 +290,14 @@ app.post("/sellOrder", requireAuth, async(req, res) =>{
       await existingOrder.save();
     }
 
+    wallet.balance = Number(wallet.balance || 0) + totalCredit;
+    await wallet.save();
+
     res.status(200).json({
       success: true,
       message: "Stock sold successfully",
       order: sellOrder,
+      balance: wallet.balance,
     });
   }catch(error){
     console.log(error);
