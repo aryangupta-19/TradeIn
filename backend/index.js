@@ -19,6 +19,7 @@ const {HoldingsModel} = require("./models/HoldingsModel.js");
 const {PositionsModel} = require("./models/PositionsModel.js");
 const {OrdersModel} = require("./models/OrdersModel.js");
 const {WalletModel} = require("./models/WalletModel.js");
+const {TransactionsModel} = require("./models/TransactionsModel.js");
 
 const User = require("./models/UsersModel");
 const { createSecretToken } = require("./utils/SecretToken");
@@ -98,6 +99,10 @@ const cookieOptions = {
     maxAge: 3 * 24 * 60 * 60 * 1000,
 };
 
+const recordTransaction = async ({user, type, amount, stockName, qty, price, balanceAfter, description,}) => {
+  return TransactionsModel.create({user, type, amount, stockName, qty, price ,balanceAfter, description,});
+};
+
 app.post("/verify", userVerification);
 
 app.post('/', (req, res) => {
@@ -124,6 +129,11 @@ app.get("/allHoldings", requireAuth, async(req, res) => {
 app.get("/allOrders", requireAuth, async (req, res) => {
   const allOrders = await OrdersModel.find({user: req.user._id});
   res.status(200).json(allOrders);
+});
+
+app.get("/transactions", requireAuth, async (req, res) => {
+  const transactions = await TransactionsModel.find({ user: req.user._id }).sort({ createdAt: -1 });
+  res.status(200).json(transactions);
 });
 
 app.get("/allPositions", requireAuth, async (req, res) => {
@@ -161,6 +171,15 @@ app.post("/funds/deposit", requireAuth, async (req, res) => {
 
     wallet.balance = Number(wallet.balance || 0) + amount;
     await wallet.save();
+    
+    await recordTransaction({
+      user: req.user._id,
+      type: "DEPOSIT",
+      amount,
+      balanceAfter: wallet.balance,
+      description: "Funds deposited to wallet",
+    });
+
     return res.json({success: true, balance: wallet.balance});
 
   } catch (error) {
@@ -173,7 +192,7 @@ app.post("/funds/withdraw", requireAuth, async(req, res) =>{
   try{
     const amount = Number(req.body.amount);
     if(!Number.isFinite(amount) || amount <= 0){
-      res.status(400).json({success : false, message : "Invalid Amount"});
+      return res.status(400).json({success : false, message : "Invalid Amount"});
     }
 
     const wallet = await WalletModel.findOne({ userId: req.user._id });
@@ -188,6 +207,14 @@ app.post("/funds/withdraw", requireAuth, async(req, res) =>{
 
     wallet.balance = Number(wallet.balance || 0) - amount;
     await wallet.save();
+
+    await recordTransaction({
+      user: req.user._id,
+      type: "WITHDRAW",
+      amount: -amount,
+      balanceAfter: wallet.balance,
+      description: "Funds withdrawn from wallet",
+    });
 
     res.json({ success: true, balance: wallet.balance });
   }catch(error){
@@ -231,6 +258,17 @@ app.post("/newOrder", requireAuth, async(req, res) => {
       wallet.balance = wallet.balance - totalCost;
       await wallet.save();
       await newOrder.save();
+
+      await recordTransaction({
+        user: req.user._id,
+        type: "BUY",
+        amount: -totalCost,
+        stockName: req.body.name,
+        qty: qty,
+        price: price,
+        balanceAfter: wallet.balance,
+        description: `Bought ${qty} share(s) of ${req.body.name}`,
+      });
 
       res.status(200).json({success: true, message: "Order purchased successfully", order: newOrder, balance: wallet.balance,
       });
@@ -292,6 +330,16 @@ app.post("/sellOrder", requireAuth, async(req, res) =>{
 
     wallet.balance = Number(wallet.balance || 0) + totalCredit;
     await wallet.save();
+    await recordTransaction({
+      user: req.user._id,
+      type: "SELL",
+      amount: totalCredit,
+      stockName: name,
+      qty: qty,
+      price: price,
+      balanceAfter: wallet.balance,
+      description: `Sold ${qty} share(s) of ${name}`,
+    });
 
     res.status(200).json({
       success: true,

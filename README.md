@@ -94,7 +94,7 @@ I am continuing work on this project and currently focusing on:
 ## Next Target 
 
 1. Configure user wallet with Stock Transactions.
-2. Show Transaction Histor (Transaction Module).
+2. Preparing Azure deployment using App Service, Static Web Apps, and MongoDB Atlas.
 3. Payment Gateways.
 
 This project is still evolving, and I am treating it as an actively maintained portfolio project rather than a one-time build.
