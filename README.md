@@ -80,16 +80,27 @@ Dashboard API calls are connected with backend protected routes using credential
 6. `GET /allPositions` (protected)
 7. `POST /newOrder` (protected)
 
-## What I Am Working On Next
+## Why I Built TradeIn
 
-I am continuing work on this project and currently focusing on:
+TradeIn is a full-stack trading platform designed around the complete lifecycle of a user’s trading activity — from managing funds to executing orders and tracking portfolio performance.
 
-1. Adding more functionalities based on stock exchange with dummy money.
-2. Adding deposit withdraw features.
-3. stronger validation and consistent API error format
-4. better frontend route protection
-5. adding tests for auth and protected endpoints
-6. deployment hardening for production setup.
+I wanted to build a product where the different parts of the system work together as they would in a real financial application.
+
+The product currently includes:
+
+* User authentication with JWT, cookies, password hashing, and protected routes
+* Digital wallet for managing available trading funds
+* Add Funds & Withdraw workflows with transaction tracking
+* Buy & Sell orders using the user’s available balance
+* Order management to track executed trading activity
+* Portfolio and dashboard views for monitoring holdings and performance
+* Interactive charts for visualizing trading and portfolio data
+* Risk-scoring system to provide insights into a user’s trading behaviour
+* Backend validation and transaction logic to maintain consistent wallet and order states
+
+Rather than building isolated features, I designed TradeIn as a connected product where authentication, wallet management, orders, transactions, portfolio data, and analytics all interact with each other.
+
+The focus was not simply on building a UI for trading, but on understanding how the underlying product logic, data flow, security, and state management come together to support a complete user experience.
 
 ## Next Target 
 
