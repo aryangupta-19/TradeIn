@@ -11,17 +11,27 @@ The main goal of this project was to connect everything properly:
 
 I started this as a learning-focused project for placements, and I am still actively improving it by cleaning architecture and adding new features.
 
-## Why I Built This
+## Why I Built TradeIn
 
-I wanted one project where I could clearly demonstrate:
+TradeIn is a full-stack trading platform designed around the complete lifecycle of a user’s trading activity — from managing funds to executing orders and tracking portfolio performance.
 
-1. backend development with Express and MongoDB
-2. secure authentication flow with JWT and cookies
-3. protected route handling on backend
-4. frontend state management for auth
-5. dashboard-style UI with charts and order actions
+I wanted to build a product where the different parts of the system work together as they would in a real financial application.
 
-Instead of making separate small demos, I combined everything into one connected system.
+The product currently includes:
+
+* User authentication with JWT, cookies, password hashing, and protected routes
+* Digital wallet for managing available trading funds
+* Add Funds & Withdraw workflows with transaction tracking
+* Buy & Sell orders using the user’s available balance
+* Order management to track executed trading activity
+* Portfolio and dashboard views for monitoring holdings and performance
+* Interactive charts for visualizing trading and portfolio data
+* Risk-scoring system to provide insights into a user’s trading behaviour
+* Backend validation and transaction logic to maintain consistent wallet and order states
+
+Rather than building isolated features, I designed TradeIn as a connected product where authentication, wallet management, orders, transactions, portfolio data, and analytics all interact with each other.
+
+The focus was not simply on building a UI for trading, but on understanding how the underlying product logic, data flow, security, and state management come together to support a complete user experience.
 
 ## How This Project Is Organized
 
@@ -80,27 +90,16 @@ Dashboard API calls are connected with backend protected routes using credential
 6. `GET /allPositions` (protected)
 7. `POST /newOrder` (protected)
 
-## Why I Built TradeIn
+## What I Am Working On Next
 
-TradeIn is a full-stack trading platform designed around the complete lifecycle of a user’s trading activity — from managing funds to executing orders and tracking portfolio performance.
+I am continuing work on this project and currently focusing on:
 
-I wanted to build a product where the different parts of the system work together as they would in a real financial application.
-
-The product currently includes:
-
-* User authentication with JWT, cookies, password hashing, and protected routes
-* Digital wallet for managing available trading funds
-* Add Funds & Withdraw workflows with transaction tracking
-* Buy & Sell orders using the user’s available balance
-* Order management to track executed trading activity
-* Portfolio and dashboard views for monitoring holdings and performance
-* Interactive charts for visualizing trading and portfolio data
-* Risk-scoring system to provide insights into a user’s trading behaviour
-* Backend validation and transaction logic to maintain consistent wallet and order states
-
-Rather than building isolated features, I designed TradeIn as a connected product where authentication, wallet management, orders, transactions, portfolio data, and analytics all interact with each other.
-
-The focus was not simply on building a UI for trading, but on understanding how the underlying product logic, data flow, security, and state management come together to support a complete user experience.
+1. Adding more functionalities based on stock exchange with dummy money.
+2. Mainly I am planning to add cloud features.
+3. Stronger validation and consistent API error format
+4. Better frontend route protection
+5. Adding tests for auth and protected endpoints
+6. deployment hardening for production setup.
 
 ## Next Target 
 
