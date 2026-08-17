@@ -61,7 +61,7 @@ code {
   background: #4caf50;
 }
 
-.btn-blue {
+.btn-red {
   text-decoration: none;
   padding: 10px 20px;
   border-radius: 2px;
@@ -69,6 +69,16 @@ code {
   margin-right: 2px;
   margin-left: 2px;
   background: #f41f1f;
+}
+
+.btn-blue {
+  text-decoration: none;
+  padding: 10px 20px;
+  border-radius: 2px;
+  color: #fff;
+  margin-right: 2px;
+  margin-left: 2px;
+  background: #4184f3;
 }
 
 .row {

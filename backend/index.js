@@ -20,6 +20,7 @@ const {PositionsModel} = require("./models/PositionsModel.js");
 const {OrdersModel} = require("./models/OrdersModel.js");
 const {WalletModel} = require("./models/WalletModel.js");
 const {TransactionsModel} = require("./models/TransactionsModel.js");
+const { getRiskScore } = require("./controllers/riskControllers.js");
 
 const User = require("./models/UsersModel");
 const { createSecretToken } = require("./utils/SecretToken");
@@ -88,7 +89,7 @@ const requireAuth = async (req, res, next) => {
         message: "Unauthorized: invalid or expired token",
       });
     }
-  };
+};
   
 
 const cookieOptions = {
@@ -104,6 +105,7 @@ const recordTransaction = async ({user, type, amount, stockName, qty, price, bal
 };
 
 app.post("/verify", userVerification);
+app.get("/risk-score", requireAuth, getRiskScore);
 
 app.post('/', (req, res) => {
     const token = req.cookies.token

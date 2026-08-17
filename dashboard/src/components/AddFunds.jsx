@@ -82,7 +82,7 @@ const AddFunds = () => {
 
         <div className="col">
           <button
-            className=" btn-blue"
+            className=" btn-red"
             onClick={handleDeposit}
           >
             Deposit

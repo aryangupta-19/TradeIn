@@ -11,6 +11,7 @@ import Summary from "./Summary";
 import WatchList from "./WatchList";
 import AddFunds from "./AddFunds";
 import Transactions from "./Transactions";
+import RiskAnalysis from "./RiskAnalysis";
 
 import { GeneralContextProvider } from "./GeneralContext";
 
@@ -29,6 +30,7 @@ const Dashboard = () => {
           <Route path="/positions" element={<Positions />} />
           <Route path="/funds" element={<Funds />} />
           <Route path="/transactions" element={<Transactions />} />
+          <Route path="/riskAnalysis" element={<RiskAnalysis />} />
           <Route path="/apps" element={<Apps />} />
           <Route path="/addfunds" element={<AddFunds />} />
         </Routes>

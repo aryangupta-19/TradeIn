@@ -69,6 +69,13 @@ const Menu = () => {
               <p className = {selectedMenu===5? "menu selected": "menu"}>Transactions</p>
             </Link>
           </li>
+          <li>
+            <Link to="/riskAnalysis"
+            style={{ textDecoration: "none" }}
+            onClick={() => handleMenuClick(5)}>
+              <p className = {selectedMenu===5? "menu selected": "menu"}>Risk Analysis</p>
+            </Link>
+          </li>
           {/* <li>
             <Link to="/apps"
             style={{ textDecoration: "none" }}
